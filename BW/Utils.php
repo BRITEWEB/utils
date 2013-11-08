@@ -3,133 +3,63 @@
 namespace BW;
 
 /**
- * Class with static methods for debugging
+ * General purpose utility class
+ * 
+ * @author Alessandro Biavati <ale@briteweb.com>
+ * @package Debug.php
+ * @since 1.0.0
  */
+
 class Utils {
 
+	/**
+	 * @var cache that holds an array of all the blog objects of the current network.
+	 */
 	private static $blogsCache;
 
+
+	/**
+	 * Private construct so that this class never gets instantiated (only static)
+	 */
 	private function __construct() {}
 
+
+	/**
+	 * Encoding/Decoding utility.
+	 * URL safe B64 encode
+	 *
+	 * @author Alessandro Biavati <ale@briteweb.com>
+	 * @package briteweb/utils
+	 * @since 1.0.0
+	 * @param (string) $data - data to encode
+	 * @return (string) encoded data
+	 */
 	
-	static public function getClassPath( $class )
-	{
-		$loaders = \BW\Loader\StandardAutoloader::$registry;
-
-		foreach($loaders as $loader) {
-			foreach($loader['namespaces'] as $leader => $path) {
-				if (0 === strpos($class, $leader)) {
-					// Trim off leader (namespace or prefix)
-					$trimmed_class = substr($class, strlen($leader));
-
-					// create filename
-					$filename = self::transformClassNameToFilename($trimmed_class, $path);
-					if (file_exists($filename)) {
-						$path = dirname($filename);
-						return $path;
-					}
-				}
-			}
-		}
-
-	}
-
-	static public function getPath( $file_or_class )
-	{
-		if ( class_exists( $file_or_class ) ){
-			$path = self::getClassPath($file_or_class);
-		}elseif( file_exists( $file_or_class ) ) {
-			$path = dirname( $file_or_class );
-		}
-		return $path;
-	}
-
-
-	static public function getResourcesUrl( $file_or_class ) {
-		$path = self::getPath( $file_or_class );
-		$url = str_replace( dirname(WP_CONTENT_DIR) , home_url() . '/', $path );
-		return $url . '/resources';
-	}
-
-
-	static public function getResourcesPath( $file_or_class ) {
-		$path = self::getPath( $file_or_class );
-		return $path . '/resources';
-	}
-
-
-	static function normalizeDirectory( $directory )
-	{
-		$last = $directory[strlen($directory) - 1];
-		if (in_array($last, array('/', '\\'))) {
-			$directory[strlen($directory) - 1] = DIRECTORY_SEPARATOR;
-			return $directory;
-		}
-		$directory .= DIRECTORY_SEPARATOR;
-		return $directory;
-	}
-
-	static function transformClassNameToFilename($class, $directory)
-	{
-		// $class may contain a namespace portion, in  which case we need
-		// to preserve any underscores in that portion.
-		$matches = array();
-		preg_match('/(?P<namespace>.+\\\)?(?P<class>[^\\\]+$)/', $class, $matches);
-
-		$class     = (isset($matches['class'])) ? $matches['class'] : '';
-		$namespace = (isset($matches['namespace'])) ? $matches['namespace'] : '';
-
-		return $directory
-			 . str_replace('\\', '/', $namespace)
-			 . str_replace('_', '/', $class)
-			 . '.php';
-	}
-
-
-
-	static public function checked($selected, $current, $echo = true){
-		if(is_array($selected)) { // checkbox
-			$return = in_array($current, $selected) ? 'checked="checked"' : '';
-		}else{ // radio
-			$return = $current == $selected ? 'checked="checked"' : '';
-		}
-		if( $echo ){
-			echo $return;
-		}else{
-			return $return;
-		}
-	}
-
-	static public function selected($selected, $current, $echo = true){
-		if(is_array($selected)) { // checkbox
-			$return = in_array($current, $selected) ? 'selected="selected"' : '';
-		}else{ // radio
-			$return = $current == $selected ? 'selected="selected"' : '';
-		}
-		if( $echo ){
-			echo $return;
-		}else{
-			return $return;
-		}
-	}
-
-
 	public static function url_safe_b64_encode($data) 
 	{
-	  $b64 = base64_encode($data);
-	  $b64 = str_replace(array('+', '/', '\r', '\n', '='),
-						 array('-', '_'),
-						 $b64);
-	  return $b64;
-	}
+		$b64 = base64_encode( $data );
+		$b64 = str_replace( array( '+', '/', '\r', '\n', '=' ), array( '-', '_' ), $b64 );
+		return $b64;
 
+	}/* url_safe_b64_encode() */
+
+	/**
+	 * Encoding/Decoding utility.
+	 * URL safe B64 decode
+	 *
+	 * @author Alessandro Biavati <ale@briteweb.com>
+	 * @package briteweb/utils
+	 * @since 1.0.0
+	 * @param (string) $b64 - endoded data to decode
+	 * @return (string) decoded data
+	 */
+	
 	public static function url_safe_b64_decode($b64) 
 	{
-	  $b64 = str_replace(array('-', '_'),
-						 array('+', '/'),
-						 $b64);
-	  return base64_decode($b64);
-	}
+		$b64 = str_replace( array( '-', '_' ), array( '+', '/' ), $b64 );
+		return base64_decode( $b64 );
+
+	}/* url_safe_b64_decode() */
 
 
 	/**
@@ -140,16 +70,17 @@ class Utils {
 	 * This algorithm was originally developed for the
 	 * Solar Framework by Paul M. Jones
 	 *
-	 * @link   http://solarphp.com/
-	 * @link   http://svn.solarphp.com/core/trunk/Solar/Json.php
-	 * @link   http://framework.zend.com/svn/framework/standard/trunk/library/Zend/Json/Decoder.php
+	 * @link http://solarphp.com/
+	 * @link http://svn.solarphp.com/core/trunk/Solar/Json.php
+	 * @link http://framework.zend.com/svn/framework/standard/trunk/library/Zend/Json/Decoder.php
 	 * 
-	 * @author Alessandro Biavati <@alebiavati>
-	 * @package Utils.php
+	 * @author Alessandro Biavati <ale@briteweb.com>
+	 * @package briteweb/utils
 	 * @since 1.0.0
-	 * @param  (string) $str
+	 * @param (string) $str
 	 * @return (int) The number of bytes in a string.
 	 */
+	
 	static public function getStrLen($str) 
 	{
 		$strlen_var = strlen($str);
@@ -205,36 +136,142 @@ class Utils {
 
 
 	/**
-	 * Normalize all keys in an array to lower-case.
+	 * Converts an XML string to a formatted associative array
 	 *
-	 * @author Alessandro Biavati <@alebiavati>
-	 * @package Utils.php
+	 * @author Alessandro Biavati <ale@briteweb.com>
+	 * @package briteweb/utils
 	 * @since 1.0.0
-	 * @param (array) $arr
-	 * @return (array) Normalized array.
+	 * @param (string) $xml - XML data to convert into array
+	 * @return (array)
 	 */
-
-	public static function normalizeArrayKeys($arr) 
+	
+	static public function xmlToArray( $xml )
 	{
-		if (!is_array($arr))
-			return array();
+		$obj = new \SimpleXMLElement($xml);
 
-		if (empty($arr))
-			return $arr;
+		return self::xmlObjToArray($obj);
 
-		$normalized = array();
-		foreach ($arr as $key => $val) {
-			$normalized[strtolower($key)] = $val;
+	}/* xmlToArray */
+
+
+	/**
+	 * Converts a properly formatted array into an XML string
+	 *
+	 * @author Alessandro Biavati <ale@briteweb.com>
+	 * @package briteweb/utils
+	 * @since 1.0.0
+	 * @param (array) $array - associative array representing XML data, to be converted into XML data
+	 * @return (string)
+	 */
+	
+	static public function arrayToXml( $array )
+	{
+		$dom = self::arrayToXmlDom($array);
+		
+		return $dom->saveXML();
+
+	}/* arrayToXml */
+
+
+	/**
+	 * Converts an XML dom object into a formatted associative array
+	 *
+	 * @author Alessandro Biavati <ale@briteweb.com>
+	 * @package briteweb/utils
+	 * @since 1.0.0
+	 * @param (SimpleXMLElement) $obj - XML object to convert into array
+	 * @return (array)
+	 */
+	
+	static public function xmlObjToArray($obj)
+	{
+		// add namespaces to top element
+		$doc_namespaces = $obj->getDocNamespaces(true);
+		$namespaces = array();
+		foreach( $doc_namespaces as $ns => $ns_url ) {
+			$ns = trim((string)$ns);
+			$ns_url = trim((string)$ns_url);
+			if (empty($ns)) {
+				$ns = 'xmlns';
+			}else{
+				$ns = 'xmlns:' . $ns;
+			}
+			$namespaces[$ns] = $ns_url;
+		}
+		$array = self::xmlObjToArrayRecursion($obj);
+		$array['namespaces'] = $namespaces;
+		
+		return $array;
+
+	}/* xmlObjToArray() */
+
+
+
+	/**
+	 * Converts a properly formatted array into an XML dom object (SimpleXMLElement)
+	 *
+	 * @author Alessandro Biavati <ale@briteweb.com>
+	 * @package briteweb/utils
+	 * @since 1.0.0
+	 * @param (array) $array - formatted array represanting an XML object
+	 * @return (SimpleXMLElement)
+	 */
+	
+	static public function arrayToXmlDom( $array )
+	{
+		$dom = new \DOMDocument('1.0.0', 'UTF-8');
+
+		// create element
+		if(empty($array['text'])) {
+			$node = $dom->createElement($array['name']);
+		}else{
+			$node = $dom->createElement($array['name'], $array['text']);
 		}
 
-		return $normalized;
+		// children
+		if(!empty($array['children'])){
+			foreach($array['children'] as $child_name => $child_array) {
+				// recrusive call.
+				$child_array[0]['name'] = $child_name;
+				$child_dom = self::arr_to_xml_dom($child_array[0]);
+				$child_node = $dom->importNode($child_dom->documentElement, true);
+				$node->appendChild($child_node);
+			}
+		}
 
-	}/* normalizeArrayKeys() */
+		$root = $dom->appendChild($node);
+
+		// namespaces
+		if(!empty($array['namespaces'])){
+			foreach($array['namespaces'] as $ns => $ns_url) {
+				$root->setAttribute($ns, $ns_url);
+			}
+		}
+
+		// attributes
+		if(!empty($array['attributes'])){
+			foreach($array['attributes'] as $attribute_name => $attribute_value) {
+				$root->setAttribute($attribute_name, $attribute_value);
+			}
+		}
+
+		return $dom;
+
+	}/* arrayToXmlDom() */
 
 
 
-
-	static public function xmlObjToArrayRecursion($obj)
+	/**
+	 * Recursive function that converts an XML object into an array
+	 *
+	 * @author Alessandro Biavati <ale@briteweb.com>
+	 * @package briteweb/utils
+	 * @since 1.0.0
+	 * @param (SimpleXMLElement) $obj - XML object to convert
+	 * @return (array)
+	 */
+	
+	static private function xmlObjToArrayRecursion($obj)
 	{
 		$doc_namespaces = $obj->getDocNamespaces(true);
 		$doc_namespaces[NULL] = NULL;
@@ -281,94 +318,70 @@ class Utils {
 			'children'=>$children
 		);
 
-	}
+	}/* xmlObjToArrayRecursion() */
 
-	static public function xmlObjToArray($obj)
+
+
+
+	/**
+	 * Array utility. Normalizes all keys in an array to lower-case.
+	 *
+	 * @author Alessandro Biavati <ale@briteweb.com>
+	 * @package briteweb/utils
+	 * @since 1.0.0
+	 * @param (array) $arr
+	 * @return (array) Normalized array.
+	 */
+
+	public static function normalizeArrayKeys($arr) 
 	{
-		// add namespaces to top element
-		$doc_namespaces = $obj->getDocNamespaces(true);
-		$namespaces = array();
-		foreach( $doc_namespaces as $ns => $ns_url ) {
-			$ns = trim((string)$ns);
-			$ns_url = trim((string)$ns_url);
-			if (empty($ns)) {
-				$ns = 'xmlns';
-			}else{
-				$ns = 'xmlns:' . $ns;
-			}
-			$namespaces[$ns] = $ns_url;
-		}
-		$array = self::xmlObjToArrayRecursion($obj);
-		$array['namespaces'] = $namespaces;
-		return $array;
-	}
+		if (!is_array($arr))
+			return array();
 
-	static public function xmlToArray( $xml )
-	{
-		$obj = new \SimpleXMLElement($xml);
-		return self::xmlObjToArray($obj);
-	}
+		if (empty($arr))
+			return $arr;
 
-	static public function arrayToXmlDom( $array )
-	{
-		$dom = new \DOMDocument('1.0', 'UTF-8');
-
-		// create element
-		if(empty($array['text'])) {
-			$node = $dom->createElement($array['name']);
-		}else{
-			$node = $dom->createElement($array['name'], $array['text']);
+		$normalized = array();
+		foreach ($arr as $key => $val) {
+			$normalized[strtolower($key)] = $val;
 		}
 
-		// children
-		if(!empty($array['children'])){
-			foreach($array['children'] as $child_name => $child_array) {
-				// recrusive call.
-				$child_array[0]['name'] = $child_name;
-				$child_dom = self::arr_to_xml_dom($child_array[0]);
-				$child_node = $dom->importNode($child_dom->documentElement, true);
-				$node->appendChild($child_node);
-			}
-		}
+		return $normalized;
 
-		$root = $dom->appendChild($node);
-
-		// namespaces
-		if(!empty($array['namespaces'])){
-			foreach($array['namespaces'] as $ns => $ns_url) {
-				$root->setAttribute($ns, $ns_url);
-			}
-		}
-
-		// attributes
-		if(!empty($array['attributes'])){
-			foreach($array['attributes'] as $attribute_name => $attribute_value) {
-				$root->setAttribute($attribute_name, $attribute_value);
-			}
-		}
-
-		return $dom;
-	}
-
-	static public function arrayToXml( $array )
-	{
-		$dom = self::arrayToXmlDom($array);
-		return $dom->saveXML();
-	}
+	}/* normalizeArrayKeys() */
 
 
+	/**
+	 * Array utility
+	 *
+	 * @author Alessandro Biavati <ale@briteweb.com>
+	 * @package briteweb/utils
+	 * @since 1.0.0
+	 * @param (array) $original
+	 * @param (array) $insert - array to insert at $offset
+	 * @param (int) $offset
+	 * @return null
+	 */
 	static public function arrayInsertAtIndex($original, $insert, $offset)
 	{
 		return array_merge( array_slice($original, 0, $offset, true), $insert, array_slice($original, $offset, null, true) );
-	}
+
+	}/* arrayInsertAtIndex() */
 
 
 
+	/**
+	 * Re-calculate taxonomy terms counts.
+	 *
+	 * @author Alessandro Biavati <ale@briteweb.com>
+	 * @package briteweb/utils
+	 * @since 1.0.0
+	 * @param (array) $taxes - taxonomies to clean (all if left empty)
+	 * @return null
+	 */
 	static public function cleanTaxonomies( $taxes = null )
 	{
-		/**
-		 * get taxonomies
-		**/
+		
 		if ( empty( $taxes ) ) $taxonomies = get_taxonomies( array(), 'names' );
 		else if ( is_array( $taxes ) ) $taxonomies = $taxes;
 		else $taxonomies = array( $taxes );
@@ -394,7 +407,7 @@ class Utils {
 
 		}
 
-	}
+	}/* cleanTaxonomies() */
 
 
 
@@ -402,9 +415,9 @@ class Utils {
 	 * Transform an array to a url with query parameters
 	 * starting from a given base url.
 	 *
-	 * @author Alessandro Biavati <@alebiavati>
-	 * @package Utils.php
-	 * @since 1.0
+	 * @author Alessandro Biavati <ale@briteweb.com>
+	 * @package briteweb/utils
+	 * @since 1.0.0
 	 * @param (string) $base_url - base url to build from
 	 * @param (array) $url_args - arguments to use to build url query
 	 * @return (string) new url with query parameters
@@ -426,6 +439,15 @@ class Utils {
 	}/* arrayToUrl() */
 
 
+	/**
+	 * Get current URL based on $_SERVER variable
+	 *
+	 * @author Alessandro Biavati <ale@briteweb.com>
+	 * @package briteweb/utils
+	 * @since 1.0.0
+	 * @return (string) Requested URL
+	 */
+	
 	static public function getCurrentUrl() 
 	{
 		$s = empty($_SERVER["HTTPS"]) ? ''
@@ -440,30 +462,38 @@ class Utils {
 		$url = $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['REQUEST_URI'];
 
 		return $url;
-	}
+
+	}/* getCurrentUrl() */
 
 
-	static public function isInternalUrl($url, $in_network = false)
+	/**
+	 * Utility function to get an array of all the blogs in a multisite installation.
+	 *
+	 * @author Alessandro Biavati <ale@briteweb.com>
+	 * @package briteweb/utils
+	 * @since 1.0.0
+	 * @return (array) Array of all blogs belonging to current multisite network
+	 */
+	
+	static public function getBlogs()
 	{
-		$blogs = static::get_blogs();
+		
+		// check if the cached array is set
+		if( !isset( static::$blogsCache ) ){
 
-		foreach($blogs as $blog) {
-			if( strpos( $url, $blog->domain ) !== false ) {
-				return true;
-			}
-		}
-	}
-
-	static public function getBlogs($random = false)
-	{
-		if( !isset(static::$blogsCache)){
-			if(is_multisite()) {
+			if( is_multisite() ) 
+			{
 				global $wpdb;
+				
 				switch_to_blog(1);
+				
 				$tbl_blogs = $wpdb->prefix ."blogs";
 				static::$blogsCache = $wpdb->get_results( "SELECT blog_id, domain FROM $tbl_blogs" );
+
 				restore_current_blog();
+
 			}else{
+
 				$urlparts = parse_url(home_url());
 				$domain = str_replace($urlparts['scheme'] . '://', '', home_url());
 				$blog = (object) array(
@@ -472,12 +502,25 @@ class Utils {
 				);
 
 				static::$blogsCache = array(static::$blog);
+
 			}
 		}
 
 		return static::$blogsCache;
-	}
 
+	}/* getBlogs() */
+
+
+	/**
+	 * Get a list of files and directories contained in a directory
+	 *
+	 * @author Alessandro Biavati <ale@briteweb.com>
+	 * @package briteweb/utils
+	 * @since 1.0.0
+	 * @param (string) $directory - directory to list
+	 * @return (array) list of files and directories contained in $directory
+	 */
+	
 	static public function getDirectoryList( $directory )
 	{
 		// create an array to hold directory list
@@ -493,10 +536,10 @@ class Utils {
 
 		// open directory and walk through the filenames
 		while ($file = readdir($handler)) {
-		  // if file isn't this directory or its parent, add it to the results
-		  if ($file != "." && $file != "..") {
-			$results[] = $file;
-		  }
+			// if file isn't this directory or its parent, add it to the results
+			if ($file != "." && $file != "..") {
+				$results[] = $file;
+			}
 		}
 
 		// tidy up: close the handler
@@ -504,7 +547,8 @@ class Utils {
 
 		// done!
 		return $results;
-	}
+
+	}/* getDirectoryList() */
 
 
-}
+}/* class Utils */

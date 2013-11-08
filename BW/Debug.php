@@ -6,8 +6,8 @@ namespace BW;
 /**
  * Debug utility class
  *
- * @author Alessandro Biavati <@alebiavati>
- * @package Debug.php
+ * @author Alessandro Biavati <ale@briteweb.com>
+ * @package briteweb/utils
  * @since 1.0.0
  */
 
@@ -23,8 +23,8 @@ class Debug {
 	 * Get the current value of the debug output environment.
 	 * This defaults to the value of PHP_SAPI.
 	 *
-	 * @author Alessandro Biavati <@alebiavati>
-	 * @package Debug.php
+	 * @author Alessandro Biavati <ale@briteweb.com>
+	 * @package briteweb/utils
 	 * @since 1.0.0
 	 * @param (string) $sapi
 	 * @return (string)
@@ -43,8 +43,8 @@ class Debug {
 	 * Set the debug ouput environment.
 	 * Setting a value of null causes Zend_Debug to use PHP_SAPI.
 	 *
-	 * @author Alessandro Biavati <@alebiavati>
-	 * @package Debug.php
+	 * @author Alessandro Biavati <ale@briteweb.com>
+	 * @package briteweb/utils
 	 * @since 1.0.0
 	 * @param (string) $sapi
 	 * @return null
@@ -60,8 +60,8 @@ class Debug {
 	/**
 	 * Prints inline script to output the input parameter to the browser console.
 	 *
-	 * @author Alessandro Biavati <@alebiavati>
-	 * @package Debug.php
+	 * @author Alessandro Biavati <ale@briteweb.com>
+	 * @package briteweb/utils
 	 * @since 1.0.0
 	 * @param (mixed) $var - variable to print to console log
 	 * @return null
@@ -88,8 +88,8 @@ class Debug {
 	/**
 	 * wrapper for the dump function
 	 *
-	 * @author Alessandro Biavati <@alebiavati>
-	 * @package Debug.php
+	 * @author Alessandro Biavati <ale@briteweb.com>
+	 * @package briteweb/utils
 	 * @since 1.0.0
 	 * @param  (mixed) $var - The variable to dump.
 	 * @param  (string) $label - OPTIONAL Label to prepend to output.
@@ -109,8 +109,8 @@ class Debug {
 	 * the <pre /> tags, cleans up newlines and indents, and runs
 	 * htmlentities() before output.
 	 *
-	 * @author Alessandro Biavati <@alebiavati>
-	 * @package Debug.php
+	 * @author Alessandro Biavati <ale@briteweb.com>
+	 * @package briteweb/utils
 	 * @since 1.0.0
 	 * @param  (mixed) $var - The variable to dump.
 	 * @param  (string) $label - OPTIONAL Label to prepend to output.
@@ -159,4 +159,4 @@ class Debug {
 	}/* dump() */
 	
 	
-}/* Debug Class */
+}/* class Debug */
