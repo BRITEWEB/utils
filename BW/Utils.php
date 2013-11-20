@@ -422,19 +422,21 @@ class Utils {
 	 * @param (array) $url_args - arguments to use to build url query
 	 * @return (string) new url with query parameters
 	 */
-	static public function arrayToUrl( $base_url, $url_args = array() )
+	static public function arrayToUrl( $baseUrl, $urlArgs = array() )
 	{
 		$args = array();
 
-		foreach($url_args as $key => $arg){
-			if($arg) $args[] = $key .'='. $arg;
+		if ( !empty( $urlArgs ) ) {
+			foreach($urlArgs as $key => $arg){
+				if($arg) $args[] = $key .'='. $arg;
+			}
 		}
 		
 		$args = implode('&',$args);
 
-		$base_url .= strpos($base_url,'?') === false ? '?' : '&';
+		$baseUrl .= strpos($baseUrl,'?') === false ? '?' : '&';
 
-		return $base_url . $args;
+		return $baseUrl . $args;
 
 	}/* arrayToUrl() */
 
