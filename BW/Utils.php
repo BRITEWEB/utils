@@ -551,4 +551,86 @@ class Utils {
 	}/* getDirectoryList() */
 
 
+	/**
+	 * Find the URL of the resources folder next to a particular class
+	 *
+	 * @author Alessandro Biavati <ale@briteweb.com>
+	 * @package briteweb/utils
+	 * @since 1.0.0
+	 * @param (mixed) $class - Filename or class to base the search on.
+	 * @return (string) Url of resources folder of specified file, package or class
+	 */
+	
+	public function getResourcesUrl( $class )
+	{
+		// initialize default result. If the return is false, it means that the 
+		// class in question is not inside the WP plugins folder
+		$pluginResourcesUrl = false;
+
+		$resourcesPath = self::getResourcesPath( $class );
+
+		// check if the class is inside the plugins folder
+		if( strpos( $resourcesPath, WP_PLUGIN_DIR ) === 0 ) 
+		{
+			$pluginResourcesPath = str_replace( WP_PLUGIN_DIR, '', $resourcesPath );
+			$pluginResourcesUrl = plugins_url( $pluginResourcesPath );
+		}
+
+		// retrun URL
+		return $pluginResourcesUrl;
+	
+	}/* getResourcesUrl() */
+	
+
+	/**
+	 * Find the path of the resources folder next to a particular class
+	 *
+	 * @author Alessandro Biavati <ale@briteweb.com>
+	 * @package briteweb/utils
+	 * @since 1.0.0
+	 * @param (mixed) $class - Filename or class to base the search on.
+	 * @return (string) Path of resources folder of specified file, package or class
+	 */
+	
+	public function getResourcesPath( $class )
+	{
+	
+		// get class filename
+		$filename = self::getFilename( $class );
+
+		// add the resources folder
+		$resourcesPath = dirname( $filename ) . '/resources';
+	
+		return $resourcesPath;
+
+	}/* getResourcesPath() */
+	
+	/**
+	 * Find the path of the resources folder next to a particular class
+	 *
+	 * @author Alessandro Biavati <ale@briteweb.com>
+	 * @package briteweb/utils
+	 * @since 1.0.0
+	 * @param (mixed) $class - Filename or class to base the search on.
+	 * @return (string) Path of resources folder of specified file, package or class
+	 */
+	
+	public function getFilename( $class )
+	{
+		if( class_exists( $class ) )
+		{
+			$reflector = new \ReflectionClass( $class );
+			$filename = $reflector->getFileName();
+			
+		} else {
+			
+			$filename = $class;
+
+		}
+	
+		return $filename;
+
+	}/* getFilename() */
+	
+
 }/* class Utils */
