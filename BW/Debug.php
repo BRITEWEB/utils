@@ -71,12 +71,12 @@ class Debug {
 	{   
 		$script = '<script>console.debug(' . json_encode($var) . ');</script>';
 		if(function_exists('add_action')) {
-			add_action('admin_footer',function() use($script) {
+			add_action('wp_print_footer_scripts',function() use($script) {
 				echo $script;
-			}, 0);
-			add_action('wp_footer',function() use($script) {
+			}, 9999);
+			add_action('admin_print_footer_scripts',function() use($script) {
 				echo $script;
-			}, 0);
+			}, 9999);
 		}else {
 			echo $script;
 		}
