@@ -1,1 +1,16 @@
+# System files
 .DS_Store
+
+# Components
+/vendor
+/bower_components
+/node_modules
+
+# Build folder
+/dist
+
+# Temporary folder
+/tmp
+
+# Logs
+/npm-debug.log
