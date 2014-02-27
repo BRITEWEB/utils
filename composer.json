@@ -17,7 +17,12 @@
   "autoload" : {
     "psr-0" : { "BW" : "src/php" }
   },
-  "repositories": [],
+  "repositories": [
+    {
+      "type":"composer",
+      "url":"http://packages.briteweb.com"
+    }
+  ],
   "require": {
     "php": ">=5.3"
   },
