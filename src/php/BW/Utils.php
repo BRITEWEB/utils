@@ -468,6 +468,11 @@ class Utils {
 	}/* getCurrentUrl() */
 
 
+	static public function strleft($s1, $s2) {
+		return substr($s1, 0, strpos($s1, $s2));
+	}
+
+
 	/**
 	 * Utility function to get an array of all the blogs in a multisite installation.
 	 *
