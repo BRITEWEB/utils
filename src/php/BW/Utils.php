@@ -4,7 +4,7 @@ namespace BW;
 
 /**
  * General purpose utility class
- * 
+ *
  * @author Alessandro Biavati <ale@briteweb.com>
  * @package Debug.php
  * @since 1.0.0
@@ -34,8 +34,8 @@ class Utils {
 	 * @param (string) $data - data to encode
 	 * @return (string) encoded data
 	 */
-	
-	public static function url_safe_b64_encode($data) 
+
+	public static function url_safe_b64_encode($data)
 	{
 		$b64 = base64_encode( $data );
 		$b64 = str_replace( array( '+', '/', '\r', '\n', '=' ), array( '-', '_' ), $b64 );
@@ -53,8 +53,8 @@ class Utils {
 	 * @param (string) $b64 - endoded data to decode
 	 * @return (string) decoded data
 	 */
-	
-	public static function url_safe_b64_decode($b64) 
+
+	public static function url_safe_b64_decode($b64)
 	{
 		$b64 = str_replace( array( '-', '_' ), array( '+', '/' ), $b64 );
 		return base64_decode( $b64 );
@@ -73,15 +73,15 @@ class Utils {
 	 * @link http://solarphp.com/
 	 * @link http://svn.solarphp.com/core/trunk/Solar/Json.php
 	 * @link http://framework.zend.com/svn/framework/standard/trunk/library/Zend/Json/Decoder.php
-	 * 
+	 *
 	 * @author Alessandro Biavati <ale@briteweb.com>
 	 * @package briteweb/utils
 	 * @since 1.0.0
 	 * @param (string) $str
 	 * @return (int) The number of bytes in a string.
 	 */
-	
-	static public function getStrLen($str) 
+
+	static public function getStrLen($str)
 	{
 		$strlen_var = strlen($str);
 		$d = $ret = 0;
@@ -128,7 +128,7 @@ class Utils {
 					break;
 			}
 		}
-		
+
 		return $ret;
 
 	}/* getStrLen() */
@@ -144,7 +144,7 @@ class Utils {
 	 * @param (string) $xml - XML data to convert into array
 	 * @return (array)
 	 */
-	
+
 	static public function xmlToArray( $xml )
 	{
 		$obj = new \SimpleXMLElement($xml);
@@ -163,11 +163,11 @@ class Utils {
 	 * @param (array) $array - associative array representing XML data, to be converted into XML data
 	 * @return (string)
 	 */
-	
+
 	static public function arrayToXml( $array )
 	{
 		$dom = self::arrayToXmlDom($array);
-		
+
 		return $dom->saveXML();
 
 	}/* arrayToXml */
@@ -182,7 +182,7 @@ class Utils {
 	 * @param (SimpleXMLElement) $obj - XML object to convert into array
 	 * @return (array)
 	 */
-	
+
 	static public function xmlObjToArray($obj)
 	{
 		// add namespaces to top element
@@ -200,7 +200,7 @@ class Utils {
 		}
 		$array = self::xmlObjToArrayRecursion($obj);
 		$array['namespaces'] = $namespaces;
-		
+
 		return $array;
 
 	}/* xmlObjToArray() */
@@ -216,7 +216,7 @@ class Utils {
 	 * @param (array) $array - formatted array represanting an XML object
 	 * @return (SimpleXMLElement)
 	 */
-	
+
 	static public function arrayToXmlDom( $array )
 	{
 		$dom = new \DOMDocument('1.0.0', 'UTF-8');
@@ -270,7 +270,7 @@ class Utils {
 	 * @param (SimpleXMLElement) $obj - XML object to convert
 	 * @return (array)
 	 */
-	
+
 	static private function xmlObjToArrayRecursion($obj)
 	{
 		$doc_namespaces = $obj->getDocNamespaces(true);
@@ -333,7 +333,7 @@ class Utils {
 	 * @return (array) Normalized array.
 	 */
 
-	public static function normalizeArrayKeys($arr) 
+	public static function normalizeArrayKeys($arr)
 	{
 		if (!is_array($arr))
 			return array();
@@ -381,7 +381,7 @@ class Utils {
 	 */
 	static public function cleanTaxonomies( $taxes = null )
 	{
-		
+
 		if ( empty( $taxes ) ) $taxonomies = get_taxonomies( array(), 'names' );
 		else if ( is_array( $taxes ) ) $taxonomies = $taxes;
 		else $taxonomies = array( $taxes );
@@ -431,7 +431,7 @@ class Utils {
 				if($arg) $args[] = $key .'='. $arg;
 			}
 		}
-		
+
 		$args = implode('&',$args);
 
 		$baseUrl .= strpos($baseUrl,'?') === false ? '?' : '&';
@@ -449,8 +449,8 @@ class Utils {
 	 * @since 1.0.0
 	 * @return (string) Requested URL
 	 */
-	
-	static public function getCurrentUrl() 
+
+	static public function getCurrentUrl()
 	{
 		$s = empty($_SERVER["HTTPS"]) ? ''
 			: ($_SERVER["HTTPS"] == "on") ? "s"
@@ -481,19 +481,19 @@ class Utils {
 	 * @since 1.0.0
 	 * @return (array) Array of all blogs belonging to current multisite network
 	 */
-	
+
 	static public function getBlogs()
 	{
-		
+
 		// check if the cached array is set
 		if( !isset( static::$blogsCache ) ){
 
-			if( is_multisite() ) 
+			if( is_multisite() )
 			{
 				global $wpdb;
-				
+
 				switch_to_blog(1);
-				
+
 				$tbl_blogs = $wpdb->prefix ."blogs";
 				static::$blogsCache = $wpdb->get_results( "SELECT blog_id, domain FROM $tbl_blogs" );
 
@@ -527,7 +527,7 @@ class Utils {
 	 * @param (string) $directory - directory to list
 	 * @return (array) list of files and directories contained in $directory
 	 */
-	
+
 	static public function getDirectoryList( $directory )
 	{
 		// create an array to hold directory list
@@ -567,17 +567,17 @@ class Utils {
 	 * @param (mixed) $class - Filename or class to base the search on.
 	 * @return (string) Url of resources folder of specified file, package or class
 	 */
-	
+
 	public function getResourcesUrl( $class )
 	{
-		// initialize default result. If the return is false, it means that the 
+		// initialize default result. If the return is false, it means that the
 		// class in question is not inside the WP plugins folder
 		$pluginResourcesUrl = false;
 
 		$resourcesPath = self::getResourcesPath( $class );
 
 		// check if the class is inside the plugins folder
-		if( strpos( $resourcesPath, WP_PLUGIN_DIR ) === 0 ) 
+		if( strpos( $resourcesPath, WP_PLUGIN_DIR ) === 0 )
 		{
 			$pluginResourcesPath = str_replace( WP_PLUGIN_DIR, '', $resourcesPath );
 			$pluginResourcesUrl = plugins_url( $pluginResourcesPath );
@@ -585,9 +585,9 @@ class Utils {
 
 		// retrun URL
 		return $pluginResourcesUrl;
-	
+
 	}/* getResourcesUrl() */
-	
+
 
 	/**
 	 * Find the path of the resources folder next to a particular class
@@ -598,20 +598,20 @@ class Utils {
 	 * @param (mixed) $class - Filename or class to base the search on.
 	 * @return (string) Path of resources folder of specified file, package or class
 	 */
-	
+
 	public function getResourcesPath( $class )
 	{
-	
+
 		// get class filename
 		$filename = self::getFilename( $class );
 
 		// add the resources folder
 		$resourcesPath = dirname( $filename ) . '/resources';
-	
+
 		return $resourcesPath;
 
 	}/* getResourcesPath() */
-	
+
 	/**
 	 * Find the path of the resources folder next to a particular class
 	 *
@@ -621,24 +621,24 @@ class Utils {
 	 * @param (mixed) $class - Filename or class to base the search on.
 	 * @return (string) Path of resources folder of specified file, package or class
 	 */
-	
+
 	public function getFilename( $class )
 	{
 		if( class_exists( $class ) )
 		{
 			$reflector = new \ReflectionClass( $class );
 			$filename = $reflector->getFileName();
-			
+
 		} else {
-			
+
 			$filename = $class;
 
 		}
-	
+
 		return $filename;
 
 	}/* getFilename() */
-	
+
 
 
 	/**
@@ -649,16 +649,16 @@ class Utils {
 	 * @since 1.0.0
 	 * @return (int) Main blog ID
 	 */
-	
+
 	static public function getMainBlogId()
 	{
 		if( BLOG_ID_CURRENT_SITE )
 			return BLOG_ID_CURRENT_SITE;
 		else
 			return 1;
-	
+
 	}/* getMainBlogId() */
-		
+
 
 	/**
 	 * Normalized search for a specific blog id.
@@ -671,17 +671,17 @@ class Utils {
 	 *                             - 'site' -> returns the current site id
 	 *                             - 'main' -> returns the main site id
 	 *                             - (int) -> returns the input blog id
-	 *                             - 'example.org' -> the input is considered a domain, 
+	 *                             - 'example.org' -> the input is considered a domain,
 	 *                             				 	  optional path can be specified
-	 *                             - null -> returns $_POST['blogId'] if set. 
+	 *                             - null -> returns $_POST['blogId'] if set.
 	 *                             			 Otherwise it returns the current site id
 	 * @return (int|string) either a blog id or "network"
 	 */
-	
+
 	static public function getBlogId( $blogId = null, $path = null )
 	{
 		// verify that we are in multisite. If not multisite, we return 1.
-		if ( !is_multisite() ) 
+		if ( !is_multisite() )
 			return 1;
 
 		if ( is_numeric( $blogId ) || $blogId === 'network' ) {
@@ -689,7 +689,7 @@ class Utils {
 			// do nothing
 
 		}elseif( $blogId == 'site' ){
-			
+
 			$blogId = get_current_blog_id();
 
 		}elseif ( $blogId === 'main' ) {
@@ -699,7 +699,7 @@ class Utils {
 		}elseif ( is_string( $blogId ) ) {
 
 			$blogId = get_blog_id_from_url( $blogId, $path );
-			
+
 		}elseif ( is_null( $blogId ) && isset( $_POST['blogId'] ) ) {
 
 			$blogId = intval( $_POST['blogId'] );
@@ -711,8 +711,27 @@ class Utils {
 		}
 
 		return $blogId;
-	
+
 	}/* verifyBlogId() */
+
+
+	/**
+	 * Normalize all keys in an array to lower-case.
+	 * @param array $arr
+	 * @return array Normalized array.
+	 */
+	public static function normalize($arr) {
+	  if (!is_array($arr)) {
+		return array();
+	  }
+
+	  $normalized = array();
+	  foreach ($arr as $key => $val) {
+		$normalized[strtolower($key)] = $val;
+	  }
+	  return $normalized;
+	}
+
 
 
 }/* class Utils */
