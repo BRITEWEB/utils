@@ -1,7 +1,7 @@
 {
   "name": "briteweb/utils",
-  "description": "Briteweb Utility Module",
-  "version": "1.0.2",
+  "description": "Briteweb PHP Utilities",
+  "version": "0.0.1",
   "authors": [
     {
       "name": "#BRITEWEB",
@@ -10,31 +10,14 @@
     },
     {
       "name": "Alessandro Biavati",
-      "email": "ale@alebiavati.com",
+      "email": "abiavati@gmail.com",
       "homepage": "http://alebiavati.com"
     }
   ],
   "autoload" : {
-    "psr-0" : { "BW" : "src/php" }
+    "psr-4" : { "BW\\" : "src/php/" }
   },
-  "repositories": [
-    {
-      "type":"composer",
-      "url":"http://packages.briteweb.com"
-    }
-  ],
   "require": {
     "php": ">=5.3"
-  },
-  "require-dev": {
-    "php": ">=5.4.6",
-    "ext-xdebug": "~2.0",
-    "phpunit/phpunit": "~3.7.0",
-    "phpunit/dbunit": ">=1.2",
-    "phpunit/php-invoker": "*",
-    "phpunit/phpunit-selenium": ">=1.2",
-    "phpunit/phpunit-story": "*",
-    "mockery/mockery": "~0.8.0"
-  },
-  "scripts": {}
+  }
 }
