@@ -9,6 +9,11 @@
      */
     static private $viewsDirname = 'src/views';
 
+    /**
+     * Private construct so that this class never gets instantiated (only static)
+     */
+    private function __construct() {}
+
 
     /**
      * Render Twig templates using the timber method, but allowing us to not specify a file extension

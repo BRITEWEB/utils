@@ -5,6 +5,12 @@
   class Media
   {
 
+    /**
+     * Private construct so that this class never gets instantiated (only static)
+     */
+    private function __construct() {}
+
+
     static public function getAcfImageSrc( $post_id = false, $field, $size = 'thumbnail') {
 
       if ( ! function_exists( 'get_field' ) ) return false;
@@ -128,12 +134,6 @@
     }
 
 
-
-    /*--------------------------------------------------------------------------------------
-    *
-    *    GET DOCUMENT MIME TYPE CLASS
-    *
-    *-------------------------------------------------------------------------------------*/
 
     static public function getDocTypeClass( $mime ) {
 
@@ -259,104 +259,5 @@
 
     }/* getVideoService() */
 
-
-    static public function enqueueResource( $id, $array_or_file, $dep = array(), $footer = false, $ignore_pack = false, $ignore_minify = false, $less_args = array() ) {
-
-      if( is_array($array_or_file) ) {
-        $class_or_path = $array_or_file[0];
-        $resource_path = $array_or_file[1];
-        $file = \BW\Utils::getResourcesUrl( $class_or_path ) . '/' . trim($resource_path, '/');
-      }elseif( is_string($array_or_file) ){
-        $file = $array_or_file;
-        $template_directory = get_bloginfo( 'template_directory' );
-        if(strpos($file, $template_directory) === false && strpos($file, 'http://') === false && strpos($file, 'https://') === false) {
-          $file =  $template_directory  . '/' . trim($file, '/');
-        }
-      }
-
-      if(empty($file)) return false;
-
-      if( strpos($file, '.js') !== false ){
-        $file_type =  'js';
-      }elseif( strpos($file, '.css') !== false ){
-        $file_type =  'css';
-      }elseif( strpos($file, '.less') !== false ){
-        $file_type =  'less';
-      }else {
-        return false;
-      }
-
-      if ( empty( $file ) ) return;
-
-      if( empty($id) ) {
-        $id = str_replace(site_url() . '/wp-content/', '', $file );
-        $id = str_replace( '.' . $file_type, '-' . $file_type, $id );
-        $id = str_replace( '/', '-', $id );
-        $id = trim( $id, '- ' );
-      }else {
-        if($file_type == 'js') {
-          if( wp_script_is($id) )
-            wp_deregister_script( $id );
-        }else{
-          if( wp_style_is($id) )
-            wp_deregister_style( $id );
-        }
-      }
-
-      if($file_type == 'js') {
-        wp_enqueue_script( $id, $file, $dep, false, $footer );
-      }elseif($file_type == 'css') {
-        wp_enqueue_style( $id, $file, $dep, false );
-      }elseif($file_type == 'less') {
-        if(!is_array($less_args)) $less_args = array();
-        $less_args['path'] = str_replace(home_url() . '/', dirname(WP_CONTENT_DIR) , dirname($file));
-        $less_args['name'] = $id;
-        \BW\Less\Less::bw_less_css( basename($file), $less_args);
-      }
-
-      $filter = '';
-
-      if($ignore_minify) {
-        if($file_type == 'js') {
-          $filter = 'bwp_minify_script_ignore';
-        }elseif($file_type == 'css' || $file_type == 'less') {
-          $filter = 'bwp_minify_style_ignore';
-        }
-      }else{
-        if($ignore_pack) {
-          if($file_type == 'js') {
-            $filter = 'bwp_minify_script_direct';
-          }elseif($file_type == 'css' || $file_type == 'less') {
-            $filter = 'bwp_minify_style_direct';
-          }
-        }else{
-          if($footer) {
-            if($file_type == 'js') {
-              $filter = 'bwp_minify_script_footer';
-            }elseif($file_type == 'css' || $file_type == 'less') {
-              $filter = 'bwp_minify_style_footer';
-            }
-          }else{
-            if($file_type == 'js') {
-              $filter = 'bwp_minify_script_header';
-            }elseif($file_type == 'css' || $file_type == 'less') {
-              $filter = 'bwp_minify_style_header';
-            }
-          }
-        }
-
-      }
-
-      if( !empty($filter) && isset(static::$$filter) && is_array(static::$$filter) ) {
-        if( !in_array($id, static::$$filter) ){
-          $new_handles = static::$$filter;
-          $new_handles[] = $id;
-          static::$$filter = $new_handles;
-          if ( !has_filter($filter, array(get_called_class(), 'bwp_minify_add_handles') ) );
-            add_filter($filter, array(get_called_class(), 'bwp_minify_add_handles'));
-        }
-      }
-
-    }
 
   }/* class Media */

@@ -5,6 +5,10 @@
   class Social
   {
 
+    /**
+     * Private construct so that this class never gets instantiated (only static)
+     */
+    private function __construct() {}
 
 
     static public function buildShareUrl( $url = null, $campaign = null, $source = null, $location = null )
@@ -21,7 +25,7 @@
       );
 
 
-      $url = \BW\Utils::arrayToUrl($url, $args);
+      $url = Data::arrayToUrl($url, $args);
 
       if ( $source && ( $source == 'facebook' || $source == 'email' ) ) {
         $shorturl = $url;
@@ -382,7 +386,7 @@
 
     static public function getCurrentUrl()
     {
-      $url = \BW\Utils::getCurrentUrl();
+      $url = Url::getCurrentUrl();
       $url = str_replace( array('?bw_history=true', '&bw_history=true', '?json=true', '&json=true'), '', $url );
       return $url;
     }
