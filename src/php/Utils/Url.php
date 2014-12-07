@@ -33,7 +33,6 @@
       else
         $classPath = static::getClassPath( $class );
 
-
       // check if the class is inside the plugins folder
       if ( strpos( $classPath, WP_PLUGIN_DIR ) === 0 )
       {
@@ -48,13 +47,13 @@
       else
       {
         // find Root path (without WP)
-        $homePath = Utils\String::findCommonSubString( array( ABSPATH, WP_CONTENT_DIR ) );
+        $homePath = rtrim( String::findCommonSubString( array( ABSPATH, WP_CONTENT_DIR ) ), '/' );
 
         // check if the class is inside the plugins folder
         if( strpos( $classPath, $homePath ) === 0 )
         {
           $themeUrl = get_stylesheet_directory_uri();
-          $classUrl = str_replace( rtrim($homePath, '/'), rtrim(home_url(), '/'), $classPath );
+          $classUrl = str_replace( $homePath, rtrim(home_url(), '/'), $classPath );
         }
 
       }
@@ -159,7 +158,7 @@
         : ($_SERVER["HTTPS"] == "on") ? "s"
         : "";
 
-      $sp = strtolower($_SERVER["SERVER_PROTOCOL"])
+      $sp = strtolower($_SERVER["SERVER_PROTOCOL"]);
       $protocol = substr($sp, 0, strpos($sp, '/')) . $s;
 
       $port = ($_SERVER["SERVER_PORT"] == "80") ? ""
